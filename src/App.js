@@ -1,31 +1,57 @@
 import React, { Component } from 'react'
-import ConditionalSection from './sections/conditional'
-import Forms from './sections/forms'
-import pokemons from './data/pokemons.json'
+import PropTypes from 'prop-types'
 
+class BoxChildren extends Component {
+  render() {
+    return (
+      <div style={{border: '1px solid #000', margin: 10, padding: 10}}>
+        {this.props.children}
+      </div>
+    )
+  }
+}
+
+class Article extends Component {
+  static propTypes = {
+    author: PropTypes.string.isRequired
+  }
+  render() {
+    const {title, author, publicationDate, children } = this.props
+    return (
+      <section>
+        <h3>{title}</h3>
+        {author && <p><em>Escrito por {author}</em></p>}
+        <BoxChildren>{publicationDate}</BoxChildren>
+        <article>{children}</article>
+      </section>
+    );
+  }
+}
 
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {mouseX: 0, mouseY: 0};
-  }
-
-  handleMouseMove = (e) => {
-    const {clientX, clientY} = e;
-    this.setState({mouseX: clientX, mouseY: clientY});
-  }
 
   render () {
     return (
+      /* Al cambiar author='Aylen Hoz' por:
+      - author={true} dara error por consola por el tipo de dato
+      - Nada (borrado) dara error por required*/
       <div className="App">
-        <button onClick={() => alert('Hola')}>Di 'hola'</button>
-        <h2>Posicion de mouse</h2>
-        <div onMouseMove={this.handleMouseMove}
-        style={{ border: '1px solid #000', marginTop: 10, padding: 10}}>
-          <h3>{this.state.mouseX}, {this.state.mouseY}</h3>
-        </div>
-        <h1>Formulario</h1>
-        <Forms />
+        <h2>Children</h2>
+        <BoxChildren>
+          Soy children!
+        </BoxChildren>
+        <BoxChildren>
+          Hola, soy el otro Children
+        </BoxChildren>
+        <h2>Vamos a hacer un articulo con children Layout:</h2>
+        <Article
+          author='Aylen Hoz'
+          title='Titulo articulo'
+          publicationDate={new Date().toLocaleDateString()}
+        >
+          <p>Este es el contenido del articulo</p>
+          <strong>Y esta su conclusión</strong>
+        </Article>
       </div>
     );
   }
